@@ -8,6 +8,9 @@ interface Props {
 
 const Input = ({ onClick }: Props) => {
   const [inputValue, setInputValue] = useState("");
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    return e.key === "Enter"
+  };
 
   return (
     <div className="relative group max-w-md my-4">
@@ -17,7 +20,7 @@ const Input = ({ onClick }: Props) => {
         onChange={(e) => {
           setInputValue(e.target.value);
         }}
-        // onKeyDown={handleKeyPress}
+        onKeyDown={handleKeyPress ?? onClick(inputValue)}
         placeholder="Add a new task..."
         className="w-full h-14 pl-6 pr-16 bg-white border border-slate-200 rounded-full 
                      shadow-sm transition-all duration-200 ease-in-out

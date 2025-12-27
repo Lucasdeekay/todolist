@@ -38,7 +38,7 @@ const Input = ({ onClick }: Props) => {
         disabled={!inputValue.trim()}
         className="absolute right-2 top-2 bottom-2 aspect-square flex items-center justify-center
                      bg-green-600 text-white rounded-full transition-all duration-200
-                     hover:bg-green-700 active:scale-95 disabled:bg-green-200 
+                     hover:bg-green-900 active:scale-95 disabled:bg-green-300 
                      disabled:cursor-not-allowed disabled:scale-100
                      shadow-sm hover:shadow-md"
         aria-label="Add item"

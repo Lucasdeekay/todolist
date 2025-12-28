@@ -1,6 +1,7 @@
-import { Edit2, Trash2, CircleCheck, CircleX } from "lucide-react";
+import { Trash2, ClipboardList } from "lucide-react";
 
 export interface TodoItem {
+  id: number;
   task: string;
   completed: boolean;
   date: number;
@@ -11,6 +12,8 @@ interface Props {
   items: TodoItem[];
   subtitle?: string;
   title: string;
+  onToggle: (index: number) => void;
+  onDelete: (index: number) => void;
 }
 
 // Map color prop to specific Tailwind classes to avoid JIT interpolation issues
@@ -44,7 +47,7 @@ const colorMap = {
   },
 };
 
-const ListModal = ({ color = "blue", items, subtitle, title }: Props) => {
+const ListModal = ({ color = "blue", items, subtitle, title, onToggle: onToggleComplete, onDelete }: Props) => {
   const styles = colorMap[color] || colorMap.blue;
 
   return (
@@ -74,19 +77,21 @@ const ListModal = ({ color = "blue", items, subtitle, title }: Props) => {
             <div
               className={`w-12 h-12 rounded-xl ${styles.bg} flex items-center justify-center shrink-0 transition-colors`}
             >
-              {item.completed ? (
-                <CircleCheck size={24} className="text-white" />
-              ) : (
-                <CircleX size={24} className="text-white" />
-              )}
+              <ClipboardList size={24} className="text-white" />
             </div>
 
             {/* Content */}
             <div className="flex-grow min-w-0">
-              <h4 className="font-semibold text-black-800 truncate">
+              <h4
+                className={`font-semibold truncate transition-all ${
+                  item.completed
+                    ? "text-slate-400 line-through"
+                    : "text-slate-900"
+                }`}
+              >
                 {item.task}
               </h4>
-              <p className="text-xs text-black-400 font-medium uppercase tracking-wider">
+              <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">
                 {new Date(item.date).toLocaleDateString()}
               </p>
             </div>
@@ -94,16 +99,23 @@ const ListModal = ({ color = "blue", items, subtitle, title }: Props) => {
             {/* Actions */}
             <div className="flex items-center gap-1">
               <button
-                title="Edit"
-                className="p-2.5 text-black-400 text-white bg-blue-900 rounded-lg transition-all"
-              >
-                <Edit2 size={18} />
-              </button>
-              <button
+                onClick={() => onDelete(item.id)}
                 title="Delete"
                 className="p-2.5 text-black-400 text-white bg-red-900 rounded-lg transition-all"
               >
                 <Trash2 size={18} />
+              </button>
+              {/* Checkbox Icon Box */}
+              <button
+                onClick={() => onToggleComplete(item.id)}
+                className="mx-3"
+              >
+                <input
+                  type="checkbox"
+                  checked={item.completed}
+                  readOnly
+                  className="w-4 h-4 rounded-xl"
+                />
               </button>
             </div>
           </div>

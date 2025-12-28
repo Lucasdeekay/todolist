@@ -9,12 +9,33 @@ function App() {
   const [todoList, setTodoList] = useState<TodoItem[]>([]);
 
   const handleSaveTodo = (task: string) => {
-    setTodoList((prev) => [
-      ...prev,
-      { task, completed: false, date: Date.now() },
-    ]);
-    console.log("Todo:", todoList);
-  }
+    setTodoList((prev) => {
+      // Find the max ID in the current list to auto-increment
+      const maxId =
+        prev.length > 0
+          ? Math.max(...prev.map((item) => item.id || 0))
+          : 0;
+
+      const nextId = maxId + 1;
+
+      return [
+        ...prev,
+        { id: nextId, task, completed: false, date: Date.now() },
+      ];
+    });
+  };
+
+  const handleToggle = (id: number) => {
+    setTodoList((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, completed: !item.completed } : item
+      )
+    );
+  };
+
+  const handleDelete = (id: number) => {
+    setTodoList((prev) => prev.filter((item) => item.id !== id));
+  };
 
   return (
     <>
@@ -23,22 +44,18 @@ function App() {
         <Input onClick={handleSaveTodo} />
         <div className="flex flex-3 gap-3">
           <ListModal
-            color="blue"
-            items={todoList}
             title="Today"
-            subtitle="Manage your tasks"
+            items={todoList.filter((i) => !i.completed)}
+            color="blue"
+            onToggle={handleToggle}
+            onDelete={handleDelete}
           />
           <ListModal
-            color="red"
-            items={todoList}
-            title="Tomorrow"
-            subtitle="Plan ahead"
-          />
-          <ListModal
-            color="green"
-            items={todoList}
             title="Completed"
-            subtitle="Job Done"
+            items={todoList.filter((i) => i.completed)}
+            color="green"
+            onToggle={handleToggle}
+            onDelete={handleDelete}
           />
         </div>
       </div>
